@@ -1,0 +1,10 @@
+Vagrant.configure("2") do |config|
+  # which vagrant box to use
+  config.vm.box = "centos"
+  # mount local folder with nfs
+  config.vm.synced_folder ".", "/vagrant", type: "nfs"
+  # set eth1
+  config.vm.network "public_network", ip: "172.16.0.254"
+  # add provisioning script
+  config.vm.provision "shell", path: "basic.sh"
+end
