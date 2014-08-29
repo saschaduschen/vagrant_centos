@@ -78,7 +78,9 @@ net.ipv4.tcp_window_scaling = 1 " >> /etc/sysctl.conf
 
 # configure Firewall
 #
-# this part will set up basic rules to controll the network access.
+# this part will set up basic rules to controll the network access.i
+# unfortunately I couldn't find a way to enable "vagrant ssh" and only allow connections from the subnet 172.16.0.0/16
+#
 echo "configure Firewall"
 # allow to acces the server on port 80 from any IP.
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
@@ -86,6 +88,9 @@ iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 # allow to acces the server on port 22 from the subnet 172.16.0.0/16.
 iptables -A INPUT -p tcp -s 172.16.0.0/16 --dport 22 -j ACCEPT
+# allow ssh from the host (needed for vagrant)
+hostip=`netstat -an |grep ":22" |grep ESTABLISHED | awk '{print $5}' |cut -d":" -f1`
+iptables -A INPUT -p tcp -s $hostip --dport 22 -j ACCEPT
 # deny all other connection to the server
 iptables -P INPUT DROP
 iptables -L
