@@ -91,6 +91,8 @@ iptables -A INPUT -p tcp -s 172.16.0.0/16 --dport 22 -j ACCEPT
 # allow ssh from the host (needed for vagrant)
 hostip=`netstat -an |grep ":22" |grep ESTABLISHED | awk '{print $5}' |cut -d":" -f1`
 iptables -A INPUT -p tcp -s $hostip --dport 22 -j ACCEPT
+# allow nfs for vagrant nfs mount
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 # deny all other connection to the server
 iptables -P INPUT DROP
 iptables -L
